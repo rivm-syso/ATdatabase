@@ -1,11 +1,15 @@
-test_that("create_database_tables", {
+test_that("drop_database_tables", {
 
 create_database_tables(dbconn)
-
+    
 lst <- pool::dbListTables(dbconn)
 tables <- c("cache", "measurements", "meta", "sensor")
-expect_true(length(setdiff(tables,lst)) == 0)
 
 drop_database_tables(dbconn)
+lst <- pool::dbListTables(dbconn)
+expect_true(length(lst) == 1)
+
+
 
 })
+
