@@ -17,3 +17,30 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(ATdatabase)
 ```
+
+
+# Introduction
+
+* What this package does
+
+# Creating the database
+
+* database model (data + meta)
+* SQLite is current backend  
+* create and drop tables
+
+# Storing data
+
+* getting meta data (station info)
+* store meta data   
+
+* get data from example dataset (use download_data_example)
+* example different time ranges  
+* use data from database  
+
+# Use external download handler
+
+* intro samanapir
+* get sensor data + met stations  
+* meta + data  
+  
