@@ -1,0 +1,22 @@
+Package: ATdatabase
+Title: Database backend for the Analyse Together tool
+Version: 0.0.1
+Authors@R: 
+ person(given = "Job",
+           family = "Spijker",
+           role = c("aut", "cre"),
+           email = "job.spijker@rivm.nl",
+           comment = c(ORCID = "0000-0001-9276-2640"))
+Description: Database backend for the Analyse Together (AT) tool. This backend provides a caching database with uniform API for data exploration tools like AT. With AT users can explore their own environmental sensor data. This database can download such data from different sources, stores measurements in 'classic' tables and uses a NoSQL approach for all kind of meta-data and application data.  
+License: GPL-3
+    license
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+Depends: R (>= 4.1), pool
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
+Config/testthat/edition: 3
