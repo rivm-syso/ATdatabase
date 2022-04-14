@@ -29,6 +29,181 @@ library(ATdatabase)
 * SQLite is current backend  
 * create and drop tables
 
+## database model
+
+The database model is based on the concept of mobile or static
+stations. Each station contains equipment or sensors which measure a
+certain parameter, and the values of these parameters change over time.
+
+A station can be any assemblage of measuring equipment. For example it
+can be a huge and expensive reference air monitoring station, but it
+can also be a cheap ducktape assemblage of exotic electronics of a
+hobyist. The station doesn't have to be an air quality monitoring
+station, also meteorological stations are possible. It can be anything
+that measures something somewhere at some moment in time.
+
+The variation of the measured values can be aggregated. If the sensor
+measures a value each second, these values can be aggregated by
+reporting the average of these values over one hour. For example, air
+quality data is often reported as one hour average values, because
+this gives a more robust and consistent result then the strong varying
+real time data. It is up to the user to determine at which aggregation
+level the data is stored in the database, the minimum is one value
+each second.
+
+While basic station information, like station name and position, and
+measurments are stored as structured data, meta data can be stored in
+any format, as unstructured data. This meta data can either be data about the station or the
+sensor but also data about the project or region the station is part
+of. For the storage of these meta data, a NoSQL approach is used,
+where meta data is stored as JSON documents.
+
+The database uses four tables to store both measurements, caching
+information and meta data. These four tables are:
+
+* Measurments
+* caching
+* stations  
+* meta  
+
+In the next sections we will explain the information model of the
+database in detail
+
+### measurements table
+
+
+The measurements table contains all the measurements
+
+Table            | fields           | description
+--------------------------------------------------
+measurements     | id               | primary key
+                 | station          | station id 
+                 | parameter        | parameter / sensor
+                 | value            | measured value
+                 | aggregation      | aggregation period in seconds
+                 | timestamp        | date - time of observation
+
+
+The station id is the name of the station, it is stored as a string.
+Any name can be chosen. The parameter is the name of the measured
+parameter stored as string. Addition information about the parameter,
+like unit of sensor type, should be stored in the meta data.
+
+The value, stored as 'real', is a numerical value of the measurement.
+The aggregation field gives the aggregation level in seconds on which
+the value is based on. 
+
+Please note that you can not store values from the same station with
+different aggregation levels. For example with air quality data, you
+either have to chose between real time data or one hour averages. If
+you want to use both, then collect the real time data and calculate
+the one hour averages yourself.
+
+The timestamp is the date and time of the observation. This is stored
+in seconds! While odd at first to have these timestamps in seconds,
+it is very practical to determine which time ranges are present in the
+database and which time ranges should be added (this is what the
+caching part of this package does).
+
+### Station table
+
+The station table contains basis information about the station, like
+name and posistion.
+
+Table            | fields           | description
+--------------------------------------------------
+Station          | id               | primary key
+                 | station          | station id
+                 | lat, lon         | latitude / longitude
+                 | timestamp        | date - time of station info
+
+
+The station id is refered by the measurements table and contains the
+name of the station. The lat and lon fields contain the position in latitude and
+longitude of the station. While we asume that you store this position
+using the WGS84 coordinate system, any coordinate system can be used,
+even grid based systems.
+
+The timestamp contains the date and time when the position of the
+station is recorded. Static stations have a single record in this
+table while mobile station can have multiple records. It is up to the
+user to combine station mobility with measurements.
+
+### Caching table
+
+In the caching table the time ranges for which information about a
+station is present in the database, is recorded.
+
+ 
+Table            | fields           | description
+--------------------------------------------------
+caching          | id               | primary key
+                 | station          | station id
+                 | start, end       | time range
+
+
+Again, station is refered by the other tables. Start and end are the
+start and end of a time range for which measurements are available in
+the measurements table.
+
+### Meta table
+
+The meta table contains unstructured data about stations, sensors, or
+whatever the user likes to store. 
+
+
+Table            | fields           | description
+--------------------------------------------------
+meta             | id               | primary key
+                 | type             | type
+                 | ref              | reference
+                 | doc              | JSON doc
+
+
+The type field determines the type of the meta data. For example
+'station' for station info or 'project' for project info. It is up to
+the user to define the type. The ref field is a reference. For example
+if the type is 'station' the ref field can contain a station id to
+refer a station.
+
+The doc field contains the meta data itself.  The user can store vectors, lists or
+data.frames as meta data. Internally this meta data is converted to a
+JSON object and stored in the doc field. When the data is retrieved
+the user gets the data as R object (vector, list, etc).
+
+Because meta data is stored as, e.g., a data.frame, it is easy to get
+all the data of a certain type returned as single data.frames. These
+data.frames can be combined, resulting in one large table. This table
+can then be used further within the model or application.
+
+While this looks complicated, it is actually a very versatile way to
+store data as you will see in the examples further on in this
+vignette.
+
+
+## Create the database
+
+The current version of this packages uses SQLite as database backend.
+While we foresee that other database systems, like PostgreSQL, can be
+used, it is not tested yet.
+
+To create a database we have to create an SQLite database, these
+databases are file based. For this vignette we create this database in
+the tempory R directory.
+
+```{r create_database1}
+
+
+```
+
+After creating the database we have to create the database tables.
+We can use the `create_database_functions` for that. 
+
+```{r create_database2}
+
+
+```
+
 # Storing data
 
 * getting meta data (station info)
