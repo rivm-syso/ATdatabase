@@ -21,3 +21,6 @@ tags
 # prototype / test code
 prototype.R
 
+/doc/
+/Meta/
+..Rcheck/

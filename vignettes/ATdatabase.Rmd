@@ -61,7 +61,7 @@ where meta data is stored as JSON documents.
 The database uses four tables to store both measurements, caching
 information and meta data. These four tables are:
 
-* Measurments
+* Measurements
 * caching
 * stations  
 * meta  
@@ -75,13 +75,13 @@ database in detail
 The measurements table contains all the measurements
 
 Table            | fields           | description
---------------------------------------------------
+-----------------|------------------|-------------
 measurements     | id               | primary key
-                 | station          | station id 
-                 | parameter        | parameter / sensor
-                 | value            | measured value
-                 | aggregation      | aggregation period in seconds
-                 | timestamp        | date - time of observation
+.                | station          | station id 
+.                | parameter        | parameter / sensor
+.                | value            | measured value
+.                | aggregation      | aggregation period in seconds
+.                | timestamp        | date - time of observation
 
 
 The station id is the name of the station, it is stored as a string.
@@ -111,11 +111,11 @@ The station table contains basis information about the station, like
 name and posistion.
 
 Table            | fields           | description
---------------------------------------------------
+-----------------|------------------|-------------
 Station          | id               | primary key
-                 | station          | station id
-                 | lat, lon         | latitude / longitude
-                 | timestamp        | date - time of station info
+.                | station          | station id
+.                | lat, lon         | latitude / longitude
+.                | timestamp        | date - time of station info
 
 
 The station id is refered by the measurements table and contains the
@@ -136,10 +136,10 @@ station is present in the database, is recorded.
 
  
 Table            | fields           | description
---------------------------------------------------
+-----------------|------------------|-------------
 caching          | id               | primary key
-                 | station          | station id
-                 | start, end       | time range
+.                | station          | station id
+.                | start, end       | time range
 
 
 Again, station is refered by the other tables. Start and end are the
@@ -153,11 +153,11 @@ whatever the user likes to store.
 
 
 Table            | fields           | description
---------------------------------------------------
+---------------- | ---------------- | ------------
 meta             | id               | primary key
-                 | type             | type
-                 | ref              | reference
-                 | doc              | JSON doc
+.                | type             | type
+.                | ref              | reference
+.                | doc              | JSON doc
 
 
 The type field determines the type of the meta data. For example
@@ -193,14 +193,19 @@ the tempory R directory.
 
 ```{r create_database1}
 
+fname_db <- tempfile()
+dbconn <- pool::dbPool(drv = RSQLite::SQLite(), dbname = fname_db)
 
 ```
 
 After creating the database we have to create the database tables.
-We can use the `create_database_functions` for that. 
+We can use the `create_database_functions` for that. After the
+creation we check if the tables exists
 
 ```{r create_database2}
 
+create_database_tables(dbconn)
+pool::dbListTables(dbconn)
 
 ```
 
