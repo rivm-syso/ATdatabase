@@ -33,3 +33,10 @@ get_available_time_ranges <- function(station, conn){
     return(ranges)
 }
 
+get_missing_time_ranges <- function(ranges, Tstart, Tend) {
+
+    requested <- matrix(c(Tstart, Tend), ncol = 2)
+    diffs <- IntervalSurgeon::setdiffs(requested, IntervalSurgeon::flatten(ranges))
+    return(diffs)
+}
+

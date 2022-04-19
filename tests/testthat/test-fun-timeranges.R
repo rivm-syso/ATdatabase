@@ -48,3 +48,34 @@ test_that("get_available_time_ranges output", {
 
 
 })
+
+
+
+test_that("get_missing_time_ranges output", {
+
+              create_database_tables(dbconn)
+
+              range <- ex_ranges[1,]
+              insert_time_range(range, "test-1", conn = dbconn)
+              range <- ex_ranges[2,]
+              insert_time_range(range, "test-1", conn = dbconn)
+              range <- ex_ranges[3,]
+              insert_time_range(range, "test-1", conn = dbconn)
+
+              range <- get_available_time_ranges("test-1", dbconn)
+              res <- get_missing_time_ranges(range,
+                                             Tstart = req_range1$Tstart,
+                                             Tend = req_range1$Tend)
+              expect_true(res[1,2] == as.numeric(req_range1$missing_Tend))
+
+              res <- get_missing_time_ranges(range,
+                                             Tstart = req_range2$Tstart,
+                                             Tend = req_range2$Tend)
+
+              expect_true(res[1,1] == as.numeric(req_range2$missing_Tstart_1))
+              expect_true(res[1,2] == as.numeric(req_range2$missing_Tend_1))
+              expect_true(res[2,1] == as.numeric(req_range2$missing_Tstart_2))
+              expect_true(res[2,2] == as.numeric(req_range2$missing_Tend_2))
+})
+
+
