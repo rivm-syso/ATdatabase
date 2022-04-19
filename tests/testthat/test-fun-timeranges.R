@@ -81,3 +81,18 @@ test_that("get_missing_time_ranges output", {
 })
 
 
+
+test_that("insert_downloaded_ranges output", {
+              create_database_tables(dbconn)
+
+              
+              insert_downloaded_ranges("test", ex_ranges, dbconn)
+              res <- get_db_tables(dbconn)$cache
+              expect_equal(ex_ranges[1,1], res$start[1])
+              expect_equal(ex_ranges[1,2], res$end[1])
+              expect_equal(ex_ranges[3,1], res$start[3])
+              expect_equal(ex_ranges[3,2], res$end[3])
+
+               drop_database_tables(dbconn)
+
+})

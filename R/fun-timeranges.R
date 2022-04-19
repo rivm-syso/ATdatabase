@@ -40,3 +40,13 @@ get_missing_time_ranges <- function(ranges, Tstart, Tend) {
     return(diffs)
 }
 
+
+
+insert_downloaded_ranges <- function(station, ranges, conn) {
+    if(nrow(ranges) > 0 ) {
+    apply(ranges, 1, FUN = insert_time_range, station = station, 
+          conn = conn)
+    }
+}
+
+
