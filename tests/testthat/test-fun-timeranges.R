@@ -76,6 +76,8 @@ test_that("get_missing_time_ranges output", {
               expect_true(res[1,2] == as.numeric(req_range2$missing_Tend_1))
               expect_true(res[2,1] == as.numeric(req_range2$missing_Tstart_2))
               expect_true(res[2,2] == as.numeric(req_range2$missing_Tend_2))
+
+              drop_database_tables(dbconn)
 })
 
 
