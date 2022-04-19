@@ -42,7 +42,7 @@ create_database_tables <- function(conn) {
     qry = "
     CREATE TABLE cache (
                         id  INTEGER PRIMARY KEY AUTOINCREMENT,
-                        kit_id TEXT NOT NULL,
+                        station TEXT NOT NULL,
                         start INTEGER,
                         end INTEGER
     )
