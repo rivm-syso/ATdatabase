@@ -15,9 +15,36 @@ test_that("insert_time_ranges output", {
               res <- get_db_tables(dbconn)$cache
               expect_equal(res$start, ex_ranges[1,1])
               expect_equal(res$end, ex_ranges[1,2])
+              expect_equal(res$station, "test")
 
               drop_database_tables(dbconn)
 
 })
 
 
+test_that("get_available_time_ranges output", {
+
+              create_database_tables(dbconn)
+
+              range <- ex_ranges[1,]
+              insert_time_range(range, "test-1", conn = dbconn)
+              range <- ex_ranges[2,]
+              insert_time_range(range, "test-2", conn = dbconn)
+              range <- ex_ranges[3,]
+              insert_time_range(range, "test-2", conn = dbconn)
+
+              res <- get_available_time_ranges("test-1", dbconn)
+              expect_true(res[1,1] == ex_ranges[1,1])
+              expect_true(res[1,2] == ex_ranges[1,2])
+                  
+              res <- get_available_time_ranges("test-2", dbconn)
+              expect_true(nrow(res) == 2) 
+              expect_true(res[1,1] == ex_ranges[2,1])
+
+              res <- get_available_time_ranges("nonexisting", dbconn)
+              expect_true(nrow(res) == 0) 
+
+              drop_database_tables(dbconn)
+
+
+})

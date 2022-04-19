@@ -2,6 +2,8 @@
 # used in the caching table
 
 
+
+
 insert_time_range <- function(x, station, conn)  {
 
     if(length(x) >2) {
@@ -11,9 +13,23 @@ insert_time_range <- function(x, station, conn)  {
     start <- x[1]
     end <- x[2]
 
-    qry <- glue::glue_sql('INSERT INTO cache (station, start, end) VALUES ("{station}", {start}, {end});',
+    qry <- glue::glue_sql('INSERT INTO cache (station, start, end) VALUES ({station}, {start}, {end});',
                 .con = conn)
 
     pool::dbExecute(conn, qry)
+}
+
+
+
+
+get_available_time_ranges <- function(station, conn){
+
+    ranges <- dplyr::tbl(conn, "cache") %>%
+        dplyr::filter(station == {{station}}) %>%
+        dplyr::select(start,end) %>%
+        dplyr::collect() %>%
+        as.matrix()
+
+    return(ranges)
 }
 
