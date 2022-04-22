@@ -33,14 +33,21 @@ test_that("get_available_time_ranges output", {
               range <- ex_ranges[3,]
               insert_time_range(range, "test-2", conn = dbconn)
 
-              res <- get_available_time_ranges("test-1", dbconn)
-              expect_true(res[1,1] == ex_ranges[1,1])
-              expect_true(res[1,2] == ex_ranges[1,2])
+              res <- get_available_time_ranges(station = "test-1", dbconn)
+              expect_true(nrow(res) == 1) 
+              expect_true(res[1, 1] == ex_ranges[1, 1])
+              expect_true(res[1, 2] == ex_ranges[1, 2])
                   
+              res <- get_available_time_ranges(station = "test-2", dbconn)
+              expect_true(nrow(res) == 2) 
               res <- get_available_time_ranges("test-2", dbconn)
               expect_true(nrow(res) == 2) 
-              expect_true(res[1,1] == ex_ranges[2,1])
+              expect_true(res[1, 1] == ex_ranges[2, 1])
+              expect_true(res[2, 2] == ex_ranges[3, 2])
 
+              station = "nonexisting"
+              res <- get_available_time_ranges(station, dbconn)
+              expect_true(nrow(res) == 0) 
               res <- get_available_time_ranges("nonexisting", dbconn)
               expect_true(nrow(res) == 0) 
 
@@ -50,6 +57,15 @@ test_that("get_available_time_ranges output", {
 })
 
 
+test_that("get_missing_time_ranges input", {
+              range <- matrix()
+              expect_error(res <- get_missing_time_ranges(range,
+                                             Tstart = req_range1$Tstart,
+                                             Tend = req_range1$Tend)
+              )
+
+
+})
 
 test_that("get_missing_time_ranges output", {
 

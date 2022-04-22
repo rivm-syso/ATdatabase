@@ -24,8 +24,9 @@ insert_time_range <- function(x, station, conn)  {
 
 get_available_time_ranges <- function(station, conn){
 
+    s <- station
     ranges <- dplyr::tbl(conn, "cache") %>%
-        dplyr::filter(station == {{station}}) %>%
+        dplyr::filter(station == s) %>%
         dplyr::select(start,end) %>%
         dplyr::collect() %>%
         as.matrix()
@@ -34,6 +35,10 @@ get_available_time_ranges <- function(station, conn){
 }
 
 get_missing_time_ranges <- function(ranges, Tstart, Tend) {
+
+    if(nrow(ranges)==0) {
+        stop("ERROR get_missing_time: ranges is empty")
+    }
 
     requested <- matrix(c(Tstart, Tend), ncol = 2)
     diffs <- IntervalSurgeon::setdiffs(requested, IntervalSurgeon::flatten(ranges))
