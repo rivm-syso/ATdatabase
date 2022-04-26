@@ -1,5 +1,6 @@
 # builds 
 inst/doc
+inst/extdata
 
 # Rproj files
 .Rproj.user
