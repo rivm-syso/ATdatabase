@@ -1,7 +1,7 @@
 #' Insert sensor information
 #'
 #' Insert sensor information (station identifier and lat / lon
-#' coordinates) into the database. 
+#' coordinates) into the database.
 #'
 #' @param station station identifier
 #' @param lat latitude coordinate
@@ -17,17 +17,16 @@
 #'
 #' @export
 
-
-
-insert_sensor_info <- function(station, lat, lon, conn, timestamp = lubridate::now()) {
+insert_sensor_info <- function(station, lat, lon, conn, 
+                               timestamp = lubridate::now()) {
     datetime <- as.numeric(timestamp)
 
     if(!is.character(station)) {
-        stop("ERROR: insert_station_info: station is not character")
+        stop("ERROR: insert_sensor_info: station is not character")
     }
 
-    if(!is.numeric(lat)||!is.numeric(lon)) {
-        stop("ERROR: insert_station_info: lat or lon is not numeric")
+    if(!is.numeric(lat) || !is.numeric(lon)) {
+        stop("ERROR: insert_sensor_info: lat or lon is not numeric")
     }
 
     qry <- glue::glue_sql('insert into sensor (station, lat, lon, timestamp) values({station}, {lat}, {lon}, {datetime});',

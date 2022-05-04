@@ -15,13 +15,43 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
+library(dplyr)
+library(RSQLite)
+library(pool)
 library(ATdatabase)
 ```
 
 
 # Introduction
 
-* What this package does
+The ATDatabase pacakge provides a caching database for the Analyse Together
+(AT) Tool. With this tool people can analyse the data from their own
+environmental sensor, like citizens science air quality sensors. The
+AT tool follows a modular design so that we can easily adapt the tool
+for different projects or different user groups.  This effectively
+will result in one generic tool and some other versions, more catered towards
+specific usages.
+
+Data from a single environemental sensor are usually send to data
+providers who store the data and make the data available using API's
+or websites. Data exploration tools like the AT tool also combine data
+from several providers, for example sensor data from community portals,
+wheater data from meteorolical institutes and reference data from national
+monitoring networks. All these data can be accessed by API's but
+collecting the data is often slow. So it helps to reuse data after it
+is downloaded from the API.
+
+With this package you can create a database in which all the data from
+different sources can be downloaded and stored in a generalised way for applications
+like the AT tool. The database provides caching functions, so when
+data is downloaded it is immediatly available for other users (or even
+applications)
+
+While the sensor data is stored using a generalised data model, the
+pacakge also provides in data base tables and methods to store any
+other (unstructured) data. For example, information about type of
+sensor of about the location can also stored using any format, as long
+it is usable within R.
 
 # Creating the database
 
@@ -37,39 +67,40 @@ certain parameter, and the values of these parameters change over time.
 
 A station can be any assemblage of measuring equipment. For example it
 can be a huge and expensive reference air monitoring station, but it
-can also be a cheap ducktape assemblage of exotic electronics of a
-hobyist. The station doesn't have to be an air quality monitoring
-station, also meteorological stations are possible. It can be anything
-that measures something somewhere at some moment in time.
+can also be a cheap hobyist ducktape assemblage of exotic electronics.
+Each station contains one or more sensors.
+Such sensor doesn't have to be an air quality monitoring
+sensor, also meteorological sensors are possible. It can be anything
+that measures something, somewhere, at some moment in time.
 
 The variation of the measured values can be aggregated. If the sensor
 measures a value each second, these values can be aggregated by
 reporting the average of these values over one hour. For example, air
-quality data is often reported as one hour average values, because
-this gives a more robust and consistent result then the strong varying
+quality data is often reported as one hour averaged values, because
+this gives a more robust and consistent result compared to the strong varying
 real time data. It is up to the user to determine at which aggregation
 level the data is stored in the database, the minimum is one value
 each second.
 
-While basic station information, like station name and position, and
-measurments are stored as structured data, meta data can be stored in
-any format, as unstructured data. This meta data can either be data about the station or the
-sensor but also data about the project or region the station is part
-of. For the storage of these meta data, a NoSQL approach is used,
-where meta data is stored as JSON documents.
+While basic sensor information, like station name and position, and
+measurements are stored as structured data, meta data about the
+station
+or sensor (or project or region where they belong to) can be stored in any format, as unstructured data. 
+For the storage of these meta data a NoSQL approach is used.
+In this approach meta data is stored as JSON documents.
 
 The database uses four tables to store both measurements, caching
 information and meta data. These four tables are:
 
 * Measurements
 * caching
-* stations  
+* sensors  
 * meta  
 
 In the next sections we will explain the information model of the
-database in detail
+database in detail.
 
-### measurements table
+### Measurements table and timestamps
 
 
 The measurements table contains all the measurements
@@ -103,12 +134,16 @@ The timestamp is the date and time of the observation. This is stored
 in seconds! While odd at first to have these timestamps in seconds,
 it is very practical to determine which time ranges are present in the
 database and which time ranges should be added (this is what the
-caching part of this package does).
+caching part of this package does). Seconds are also used internally
+in the operating system, the 'start of time' (second 0) is the 'UNIX
+epoch': 01-01-1970 at 00:00 UTC. The way we record timestamps is for
+each table the same, so all timestamps in other tables are also in
+seconds.
 
-### Station table
+### Sensor table
 
-The station table contains basis information about the station, like
-name and posistion.
+The station table contains basic information about the sensor, like
+name and position.
 
 Table            | fields           | description
 -----------------|------------------|-------------
@@ -122,7 +157,8 @@ The station id is refered by the measurements table and contains the
 name of the station. The lat and lon fields contain the position in latitude and
 longitude of the station. While we asume that you store this position
 using the WGS84 coordinate system, any coordinate system can be used,
-even grid based systems.
+even grid based systems, as long as you name the coordinates lat and
+lon.
 
 The timestamp contains the date and time when the position of the
 station is recorded. Static stations have a single record in this
@@ -136,10 +172,10 @@ station is present in the database, is recorded.
 
  
 Table            | fields           | description
------------------|------------------|-------------
+-----------------|------------------|-------------------------
 caching          | id               | primary key
 .                | station          | station id
-.                | start, end       | time range
+.                | start, end       | time range / timestamps
 
 
 Again, station is refered by the other tables. Start and end are the
@@ -164,7 +200,7 @@ The type field determines the type of the meta data. For example
 'station' for station info or 'project' for project info. It is up to
 the user to define the type. The ref field is a reference. For example
 if the type is 'station' the ref field can contain a station id to
-refer a station.
+refer to a station.
 
 The doc field contains the meta data itself.  The user can store vectors, lists or
 data.frames as meta data. Internally this meta data is converted to a
@@ -199,7 +235,7 @@ dbconn <- pool::dbPool(drv = RSQLite::SQLite(), dbname = fname_db)
 ```
 
 After creating the database we have to create the database tables.
-We can use the `create_database_functions` for that. After the
+We can use the `create_database_tables` for that. After the
 creation we check if the tables exists
 
 ```{r create_database2}
@@ -209,14 +245,111 @@ pool::dbListTables(dbconn)
 
 ```
 
-# Storing data
+# Downloading and storing data
 
-* getting meta data (station info)
-* store meta data   
+Before you can download and store (cache) your downloaded data you
+have to make a few preparations. In general you have to create
+functions to get the data about stations, for the station info table.
+Also, you have to create a download function to obtain the station
+measurements. These functions have to return the data in a specifific
+format so they can be used in conjunction with the functions from this
+package. For each data provider, you have to write these functions
+since they will be specific for the data provider's API.
+
+This package contains example data and we simulate the download of
+data b reading this example data. It is not the real thing but i
+should give you understanding how this all works. The sample data is a
+single file with all the information in one single table.
+
+We load the sample data and have a quick look
+
+```{r}
+
+exdata <- readRDS(system.file("extdata", "ex_data.rds", 
+                            package = "ATdatabase"))
+str(exdata)
+print(summary(exdata))
+exdata
+
+```
+
+## Downloading and storing  sensor info
+
+Information about station are divided over two database tables. The
+station table only contains the station identifier, the coordinates
+(lat, lon) and a timestamp. All other station data is stored in the
+meta table as unstructured data.
+
+To get the generalised data from a station (identifier, lat, lon) we
+first create a download function which does all the API calls. In our
+example this is just a simple select from the example data. The
+download function must return a data.frame with three fields:
+'station', 'lat', and 'lon'. The station field is the station
+identifier (a string), the lat and lon fields are the coordinates (as numeric
+values).
+
+
+```{r}
+
+ex_download_station_info <- function(d = exdata) {
+    res <- d %>%
+        distinct(station, lat, lon)
+    return(res)
+}
+
+stat_info <- ex_download_station_info()
+stat_info
+
+```
+
+The station info can then be stored in the database. You only can
+store one station at a time. So if you have a data frame with station
+info as above, then you have to use either a for loop of an apply
+function. In the follwoing example we get the station information and
+use a vectorized function to store the data into the database using
+the `insert_sensor_info` function from the package.
+
+```{r}
+
+insert_sensor_info_vectorized <- function(x, conn) {
+
+    insert_sensor_info(station = x[1],
+                        lat = as.numeric(x[2]),
+                        lon = as.numeric(x[3]),
+                        conn)
+
+}
+
+apply(stat_info, 1, FUN  = insert_sensor_info_vectorized, 
+      conn = dbconn)
+
+```
+
+Now check how our sensor table looks like.
+
+```{r}
+s <- tbl(dbconn, "sensor") %>%
+    head() %>%
+    collect()
+s
+
+```
+
+As you probably allready noticed, we didn't provide a timestamp. The
+insert_station_info function adds the current timestamp to the record
+if no timestamp is given.
+
+### Adding meta data
+
+
+
+
+## Downloading and storing measurements
 
 * get data from example dataset (use download_data_example)
+* hour averaged  
 * example different time ranges  
-* use data from database  
+* example using parameters/stations from meta  
 
 # Use external download handler
 
@@ -224,3 +357,18 @@ pool::dbListTables(dbconn)
 * get sensor data + met stations  
 * meta + data  
   
+
+# Using the data
+
+* use data from database  
+* dbplyr pipes & collect  
+
+# End
+```{r}
+# closing stuff
+
+
+```
+
+
+
