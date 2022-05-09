@@ -1,20 +1,20 @@
 
 
-test_that("inser_sensor_info, input", {
+test_that("insert_location_info, input", {
 
              create_database_tables(dbconn)
 
-             expect_error(insert_station_info(station = 1, 
+             expect_error(insert_location_info(station = 1, 
                                               lat = 51.1, lon = 4.1,
                                               conn = dbconn))
 
 
-             expect_error(insert_station_info(station = "test1", 
+             expect_error(insert_location_info(station = "test1", 
                                               lat = "a", lon = 4.1,
                                               conn = dbconn))
 
 
-             expect_error(insert_station_info(station = "test1", 
+             expect_error(insert_location_info(station = "test1", 
                                               lat = 41.1, lon = "a",
                                               conn = dbconn))
 
@@ -22,17 +22,17 @@ test_that("inser_sensor_info, input", {
 })
 
 
-test_that("insert_sensor_info, output", {
+test_that("insert_location_info, output", {
 
              create_database_tables(dbconn)
 
-             insert_sensor_info(station = "test1",
+             insert_location_info(station = "test1",
                                  lat =51.1, lon = 4.1,
                                  conn = dbconn)
 
 
              db <- get_db_tables(dbconn)
-             t1  <- db$sensor
+             t1  <- db$location
              expect_true(nrow(t1) == 1)
              expect_true(t1$station[1] == "test1")
 
