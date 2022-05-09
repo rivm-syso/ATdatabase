@@ -10,7 +10,7 @@ message("executing setup")
 ######################################################################
 get_db_tables <- function(conn) {
     dbtbls <- list(measurements = dplyr::tbl(conn,"measurements") %>% dplyr::collect() ,
-                   sensor = dplyr::tbl(conn, "sensor") %>% dplyr::collect(),
+                   location = dplyr::tbl(conn, "location") %>% dplyr::collect(),
                    meta = dplyr::tbl(conn, "meta") %>% dplyr::collect(),
                    cache = dplyr::tbl(conn, "cache") %>% dplyr::collect()
     )

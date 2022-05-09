@@ -17,19 +17,19 @@
 #'
 #' @export
 
-insert_sensor_info <- function(station, lat, lon, conn, 
+insert_location_info <- function(station, lat, lon, conn, 
                                timestamp = lubridate::now()) {
     datetime <- as.numeric(timestamp)
 
     if(!is.character(station)) {
-        stop("ERROR: insert_sensor_info: station is not character")
+        stop("ERROR: insert_location_info: station is not character")
     }
 
     if(!is.numeric(lat) || !is.numeric(lon)) {
-        stop("ERROR: insert_sensor_info: lat or lon is not numeric")
+        stop("ERROR: insert_location_info: lat or lon is not numeric")
     }
 
-    qry <- glue::glue_sql('insert into sensor (station, lat, lon, timestamp) values({station}, {lat}, {lon}, {datetime});',
+    qry <- glue::glue_sql('insert into location (station, lat, lon, timestamp) values({station}, {lat}, {lon}, {datetime});',
                           .con = conn)
 
     dbExecute(conn, qry)
