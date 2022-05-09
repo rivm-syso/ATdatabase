@@ -32,7 +32,7 @@ for different projects or different user groups.  This effectively
 will result in one generic tool and some other versions, more catered towards
 specific usages.
 
-Data from a single environemental sensor are usually send to data
+Data from a single environmental sensor are usually send to data
 providers who store the data and make the data available using API's
 or websites. Data exploration tools like the AT tool also combine data
 from several providers, for example sensor data from community portals,
@@ -83,18 +83,17 @@ level the data is stored in the database, the minimum is one value
 each second.
 
 While basic sensor information, like station name and position, and
-measurements are stored as structured data, meta data about the
-station
-or sensor (or project or region where they belong to) can be stored in any format, as unstructured data. 
-For the storage of these meta data a NoSQL approach is used.
-In this approach meta data is stored as JSON documents.
+measurements are stored as structured data, meta data about the station
+or sensor (or project or region where they belong to) can be stored in any
+format, as unstructured data.  For the storage of these meta data a NoSQL
+approach is used.  In this approach meta data is stored as JSON documents.
 
 The database uses four tables to store both measurements, caching
 information and meta data. These four tables are:
 
 * Measurements
 * caching
-* sensors  
+* location  
 * meta  
 
 In the next sections we will explain the information model of the
@@ -140,14 +139,14 @@ epoch': 01-01-1970 at 00:00 UTC. The way we record timestamps is for
 each table the same, so all timestamps in other tables are also in
 seconds.
 
-### Sensor table
+### Location table
 
-The station table contains basic information about the sensor, like
+The location table contains basic information about the station, like
 name and position.
 
 Table            | fields           | description
 -----------------|------------------|-------------
-Station          | id               | primary key
+location         | id               | primary key
 .                | station          | station id
 .                | lat, lon         | latitude / longitude
 .                | timestamp        | date - time of station info
@@ -307,28 +306,28 @@ store one station at a time. So if you have a data frame with station
 info as above, then you have to use either a for loop of an apply
 function. In the follwoing example we get the station information and
 use a vectorized function to store the data into the database using
-the `insert_sensor_info` function from the package.
+the `insert_location_info` function from the package.
 
 ```{r}
 
-insert_sensor_info_vectorized <- function(x, conn) {
+insert_location_info_vectorized <- function(x, conn) {
 
-    insert_sensor_info(station = x[1],
+    insert_location_info(station = x[1],
                         lat = as.numeric(x[2]),
                         lon = as.numeric(x[3]),
                         conn)
 
 }
 
-apply(stat_info, 1, FUN  = insert_sensor_info_vectorized, 
+apply(stat_info, 1, FUN  = insert_location_info_vectorized, 
       conn = dbconn)
 
 ```
 
-Now check how our sensor table looks like.
+Now check how our location table looks like.
 
 ```{r}
-s <- tbl(dbconn, "sensor") %>%
+s <- tbl(dbconn, "location") %>%
     head() %>%
     collect()
 s
@@ -336,7 +335,7 @@ s
 ```
 
 As you probably allready noticed, we didn't provide a timestamp. The
-insert_station_info function adds the current timestamp to the record
+insert_location_info function adds the current timestamp to the record
 if no timestamp is given.
 
 ### Adding meta data
