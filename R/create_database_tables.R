@@ -29,7 +29,7 @@ create_database_tables <- function(conn) {
 
 
     qry = "
-    CREATE TABLE sensor (
+    CREATE TABLE location (
                          id  INTEGER PRIMARY KEY AUTOINCREMENT,
                          station TEXT NOT NULL,
                          lat REAL,
