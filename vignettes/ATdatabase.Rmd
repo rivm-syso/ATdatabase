@@ -340,6 +340,59 @@ if no timestamp is given.
 
 ### Adding meta data
 
+Meta data can be stored in the database using the `add_doc` function.
+Meta data can be any R object and is internally stored as JSON
+document. Each meta data object must be given a type and reference
+value. For example meta data about a station can be of type 'station'
+while meta data about a sensor cab be of type 'sensor'. The reference
+is a reference to, for example, the station id or the sensor type. As
+user you can define any scheme of type and reference as you like.
+
+The meta data object is just an R object, like a list, data.frame, or
+vector.
+
+
+As an example we create a meta data object containing the measured
+parameters for each station. The we store the list of parameters into
+the meta data, using 'station' as type and the station id as reference
+
+We start to create the dataset.
+
+```{r}
+
+meta <- exdata %>% 
+    na.omit() %>%
+    group_by(station) %>% 
+    summarise(pars = paste(unique(parameter), collapse = " "))
+meta
+
+```
+
+Then we store a single object
+
+```{r}
+
+statname <- meta$station[1]
+statpars <- meta$pars[1]
+
+add_doc(type = "station",
+        ref = statname,
+        doc = statpars,
+        conn = dbconn
+        )
+
+
+
+```
+
+And then we get the some object from the database. This document is
+identical to the object we stored in the database.
+
+```{r}
+
+doc <- get_doc(type = "station", ref = statname, conn = dbconn)
+identical(statpars, doc)
+```
 
 
 
