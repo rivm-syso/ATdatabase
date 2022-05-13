@@ -394,14 +394,112 @@ doc <- get_doc(type = "station", ref = statname, conn = dbconn)
 identical(statpars, doc)
 ```
 
-
-
-## Downloading and storing measurements
+# Downloading and storing measurements
 
 * get data from example dataset (use download_data_example)
 * hour averaged  
 * example different time ranges  
 * example using parameters/stations from meta  
+
+Since the ATdatabase is a caching database, it is assumed that there
+is an original dataasource. Most often this datasource is a database
+or a web API. To add measurements to the database, the data must first
+be downloaded before it can be stored.
+
+Since each data source has its own interface to request and deliver
+data, it is not possible to create a single 'fit for all' download
+function. So the download proces is split in two. First, the user must
+write a download function, the download handler. Then second this
+download handler must be provided to a generic download function wich
+calls the handler, proces the data and store them to the database. 
+
+The generic download functions (`download_data`) takes the staion id,
+the time range to download, the name of the download handler function,
+and the database object as arguments. When this function is called it
+checks which time ranges are allready downloaded for that station and
+which time ranges are lacking. This means that as an user you ask a
+single time range, but that internally you have to download multiple
+smaller time ranges. For each time range that must be downloaded, the
+download handler is called.
+
+The download handler takes the station id and a single time range and
+translates this into an database or API call.
+It doesn't matter how you write the download handler as long as you
+keep to the following prerequisits:
+
+ 1. The arguments of the function must be timerange, station, and
+    database connection
+ 2. The return of the function is a data.frame with measurements   
+
+Let's start with the arguments of the function. The timeranges is a
+matrix with a single row and two columns. The first column is the start time in
+seconds (POSIX time) and the second column in the end time in seconds.
+Using the lubridate package you can translate this 'time in seconds'
+into any date format as needed.
+
+The station id is the reference to a station, this id depends on the
+data source. The station ids in the database are thus the same ids as
+in the datasource.
+
+The return of the function must return a data.frame with at least the
+following fields:
+
+ 1. _station:_ the station id
+ 2. _parameter_: the measured parameter
+ 3. _value_: the measured value
+ 4. _timestamp_the timestamp of the measurements, in seconds (!)   
+ 5. _aggregation_ aggregation level
+
+## Example data
+
+For the sake of simplicity, for this vignette we use a file with
+measurements instead of an database or API. Our download handler this
+reads from file instead from a remote.
+
+Our download handler looks like this:
+
+```{r}
+download_data_fun
+```
+
+Just as example, we call this function directly to show the input
+arguments and output
+
+
+
+```{r}
+
+statname <- exdata$station[1]
+
+start_date <- exdata %>%
+    filter(station == statname) %>%
+    pull(timestamp) %>%
+    min()
+
+start_date
+lubridate::as_datetime(start_date)
+
+end_date <- exdata %>%
+    filter(station == statname) %>%
+    pull(timestamp) %>%
+    max()
+
+time_stamp <- matrix(c(start_date, end_date), ncol = 2)
+time_stamp
+
+x <- download_data_fun(time_stamp, statname, dbconn)
+x
+
+```
+
+
+```{r}
+```
+
+
+
+
+
 
 # Use external download handler
 
