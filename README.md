@@ -1,5 +1,9 @@
 # AT-DATABASE
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/rivm-syso/ATdatabase/workflows/R-CMD-check/badge.svg)](https://github.com/rivm-syso/ATdatabase/actions)
+<!-- badges: end -->
+
 Database backend for the Analyse-Together tool
 
 This is work in progress. 
