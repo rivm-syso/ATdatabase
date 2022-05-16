@@ -2,6 +2,7 @@
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/rivm-syso/ATdatabase/workflows/R-CMD-check/badge.svg)](https://github.com/rivm-syso/ATdatabase/actions)
+[![Codecov test coverage](https://codecov.io/gh/rivm-syso/ATdatabase/branch/main/graph/badge.svg)](https://codecov.io/gh/rivm-syso/ATdatabase?branch=main)
 <!-- badges: end -->
 
 Database backend for the Analyse-Together tool
