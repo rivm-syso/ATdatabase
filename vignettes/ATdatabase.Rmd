@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, echo = FALSE, messages = FALSE}
 library(dplyr)
 library(RSQLite)
 library(pool)
@@ -24,7 +24,7 @@ library(ATdatabase)
 
 # Introduction
 
-The ATDatabase pacakge provides a caching database for the Analyse Together
+The ATDatabase package provides a caching database for the Analyse Together
 (AT) Tool. With this tool people can analyse the data from their own
 environmental sensor, like citizens science air quality sensors. The
 AT tool follows a modular design so that we can easily adapt the tool
@@ -55,9 +55,8 @@ it is usable within R.
 
 # Creating the database
 
-* database model (data + meta)
-* SQLite is current backend  
-* create and drop tables
+Before we can create the database, we first have to look at the
+database model.
 
 ## database model
 
@@ -228,6 +227,10 @@ the tempory R directory.
 
 ```{r create_database1}
 
+library(pool)
+library(RSQLite)
+library(ATdatabase)
+
 fname_db <- tempfile()
 dbconn <- pool::dbPool(drv = RSQLite::SQLite(), dbname = fname_db)
 
@@ -272,7 +275,7 @@ exdata
 
 ```
 
-## Downloading and storing  sensor info
+## Downloading and storing sensor info
 
 Information about station are divided over two database tables. The
 station table only contains the station identifier, the coordinates
