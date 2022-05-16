@@ -606,13 +606,56 @@ the result.
 
 # Using the data
 
-* use data from database  
-* dbplyr pipes & collect  
+If you want to use the location info or the measurements from the
+database, you can select them directly. It is easy to create a such
+selection of data using dplyr functions. For example to select all
+the measurements for station `r statname`:
 
-# End
 ```{r}
-# closing stuff
 
+library(dplyr)
+result <- tbl(dbconn, "measurements") %>%
+    filter(station == statname) %>%
+    select(parameter, value, timestamp) %>%
+    collect() %>%
+    mutate(timestamp  = lubridate::as_datetime(timestamp))
+result
+```
+
+Please not that you have to 'collect' the data, otherwise the result
+will be a 'lazy query' instead of a tibble. This lazy query is
+evaluated when the object is used, but this evaluation does not happen
+always, giving funky results. A drawback of the collect function is
+that this 'freezes' the data, if the data is updated in the database,
+your 'result' object won't be updated (but is does get updated if
+it's a lazy query, since the query is executed when you call the
+object).
+
+If you use mutate functions, then it is best to do them after the
+collect function.
+
+If you want to get location data, you can also use dplyr functions,
+for example:
+
+```{r}
+
+result <- tbl(dbconn, "location") %>%
+    filter(station == statname) %>%
+    select(lat,lon) %>%
+    collect()
+result
+
+```
+
+If you want to get meta data from the database, then use the get_doc
+function. A few examples of this function are shown above.
+
+Stay away from the cache table. Let the package handle this table
+
+
+```{r echo = FALSE, messages = FALSE}
+# closing stuff
+pool::poolClose(dbconn)
 
 ```
 
