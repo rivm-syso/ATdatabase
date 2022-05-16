@@ -18,7 +18,8 @@ download_data(station, Tstart, Tend, fun, conn)
 \item{conn}{database connection object}
 }
 \value{
-a data.frame with the downloaded measurements
+a data.frame with the downloaded measurements or NULL if no
+measurements are downloaded
 
 This function does three things. It first determines which (parts
 of the) time ranges are missing from the database. Next, it will
