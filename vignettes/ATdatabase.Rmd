@@ -549,7 +549,7 @@ end_date <- exdata %>%
 
 Just as example, we call this function directly to show the input
 arguments and output. For station `r statname` we wil get the data for
-the time range `r start_data` to `r end_date`. The download_data_fun
+the time range `r start_date` to `r end_date`. The download_data_fun
 requires that we provide this timerange as matrix, with time in
 seconds. We use the `datetime_to_matrix` function to convert our
 timestamps
@@ -593,19 +593,10 @@ them in the database.
 
 ```{r}
 
-ts <- as.numeric(start_date)
-te <- as.numeric(end_date)
-
-req_matrix <- matrix(c(ts, te), ncol = 2)
-ranges <- get_available_time_ranges(statname, dbconn)
-
-missing <- get_missing_time_ranges(ranges, ts, te)
-
 stations_list <- get_doc("stations", "example", conn = dbconn)
 
 result <- lapply(stations_list,  FUN = download_data, Tstart = start_date,
       Tend = end_date, fun = download_data_fun, conn = dbconn)
-
 
 ```
 
