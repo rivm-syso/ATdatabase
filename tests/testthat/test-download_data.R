@@ -45,3 +45,22 @@ test_that("download_data", {
                       drop_database_tables(dbconn)
 
 })
+
+
+test_that("download_data output T2", {
+
+
+              create_database_tables(dbconn)
+
+              range <- datetime_to_matrix(req_range1$Tstart, req_range1$Tend)
+              insert_time_range(range, "test-1", conn = dbconn)
+
+              res <- download_data(station = "test-1",
+                                         Tstart = req_range1$Tstart,
+                                         Tend = req_range1$Tend,
+                                         fun = donwload_data_fun,
+                                         conn = dbconn)
+
+              expect_true(is.null(res))
+              drop_database_tables(dbconn)
+})

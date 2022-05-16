@@ -21,7 +21,7 @@ test_that("Get_download_ranges input", {
 })
 
 
-test_that("Get_download_ranges output", {
+test_that("Get_download_ranges output T1", {
               create_database_tables(dbconn)
               res <- get_download_ranges(station = "test-1",
                                          Tstart = req_range2$Tstart,
@@ -64,5 +64,22 @@ test_that("Get_download_ranges output", {
 
               drop_database_tables(dbconn)
 
+})
+
+
+
+test_that("Get_download_ranges output T2", {
+              create_database_tables(dbconn)
+
+              range <- datetime_to_matrix(req_range1$Tstart, req_range1$Tend)
+              insert_time_range(range, "test-1", conn = dbconn)
+
+              res <- get_download_ranges(station = "test-1",
+                                         Tstart = req_range1$Tstart,
+                                         Tend = req_range1$Tend,
+                                         conn = dbconn)
+
+              expect_true(nrow(res) == 0)
+              drop_database_tables(dbconn)
 })
 

@@ -36,9 +36,6 @@ get_download_ranges <- function(station, Tstart, Tend, conn) {
     } else { # allready some ranges exist
         missing <- get_missing_time_ranges(ranges, ts, te)
     }
-    if(nrow(missing) < 1) {
-        stop("ERROR get_download_ranges: there are no missing ranges, this is a bug")
-    }
     return(missing)
 
 }

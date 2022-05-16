@@ -67,7 +67,7 @@ test_that("get_missing_time_ranges input", {
 
 })
 
-test_that("get_missing_time_ranges output", {
+test_that("get_missing_time_ranges output T1", {
 
               create_database_tables(dbconn)
 
@@ -97,6 +97,21 @@ test_that("get_missing_time_ranges output", {
 })
 
 
+test_that("get_missing_time_ranges output T1", {
+
+              create_database_tables(dbconn)
+
+              range <- datetime_to_matrix(req_range1$Tstart, req_range1$Tend)
+              insert_time_range(range, "test-1", conn = dbconn)
+
+              range <- get_available_time_ranges("test-1", dbconn)
+
+              res <- get_missing_time_ranges(range,
+                                             Tstart = req_range1$Tstart,
+                                             Tend = req_range1$Tend)
+              expect_true(nrow(res) == 0)
+              drop_database_tables(dbconn)
+})
 
 test_that("insert_downloaded_ranges output", {
               create_database_tables(dbconn)

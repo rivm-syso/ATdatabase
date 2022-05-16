@@ -12,7 +12,8 @@
 #' @param fun name of function to use as downloadhandler
 #' @param conn database connection object
 #'
-#' @return a data.frame with the downloaded measurements
+#' @return a data.frame with the downloaded measurements or NULL if no
+#' measurements are downloaded
 #'
 #' This function does three things. It first determines which (parts
 #' of the) time ranges are missing from the database. Next, it will
@@ -37,7 +38,7 @@ download_data <- function(station, Tstart, Tend, fun, conn) {
     ranges <- get_download_ranges(station = s_id, Tstart = Tstart, Tend = Tend,
                                    conn = conn)
 
-    if(nrow(ranges) >0) {
+    if(nrow(ranges) > 0) {
 
         v1 <- apply(ranges, 1, eval(fun), station = station)
         if(!is.null(v1)) {
