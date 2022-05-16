@@ -7,6 +7,8 @@ Authors@R:
            role = c("aut", "cre"),
            email = "job.spijker@rivm.nl",
            comment = c(ORCID = "0000-0001-9276-2640"))
+Author: Job Spijker [aut]
+Maintainer: Job Spijker <job.spijker@rivm.nl>
 Description: Database backend for the Analyse Together (AT) tool. This backend provides a caching database with uniform API for data exploration tools like AT. With AT users can explore their own environmental sensor data. This database can download such data from different sources, stores measurements in 'classic' tables and uses a NoSQL approach for all kind of meta-data and application data.  
 License: GPL-3
     license
@@ -19,7 +21,8 @@ Depends: R (>= 4.1),
     RSQLite,
     IntervalSurgeon,
     glue,
-    magrittr
+    magrittr,
+    jsonlite
 Suggests: 
     covr,
     knitr,
