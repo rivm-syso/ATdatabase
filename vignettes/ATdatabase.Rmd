@@ -186,12 +186,12 @@ The meta table contains unstructured data about stations, sensors, or
 whatever the user likes to store. 
 
 
-Table            | fields           | description
----------------- | ---------------- | ------------
-meta             | id               | primary key
-.                | type             | type
-.                | ref              | reference
-.                | doc              | JSON doc
+Table | fields | format | description
+------|--------|--------|-------------
+meta  | id     | INT    | primary key
+.     | type   | TEXT   | type
+.     | ref    | TEXT   | reference
+.     | doc    | TEXT   | JSON doc
 
 
 The type field determines the type of the meta data. For example
