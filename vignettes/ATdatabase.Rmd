@@ -251,7 +251,7 @@ pool::dbListTables(dbconn)
 
 Before you can download and store (cache) your downloaded data you
 have to make a few preparations. In general you have to create
-functions to get the data about stations, for the station info table.
+functions to get the data about stations, for the location info table.
 Also, you have to create a download function to obtain the station
 measurements. These functions have to return the data in a specifific
 format so they can be used in conjunction with the functions from this
@@ -278,7 +278,7 @@ exdata
 ## Downloading and storing sensor info
 
 Information about station are divided over two database tables. The
-station table only contains the station identifier, the coordinates
+location table only contains the station identifier, the coordinates
 (lat, lon) and a timestamp. All other station data is stored in the
 meta table as unstructured data.
 
