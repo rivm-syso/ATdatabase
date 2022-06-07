@@ -103,14 +103,14 @@ database in detail.
 
 The measurements table contains all the measurements
 
-Table            | fields           | description
------------------|------------------|-------------
-measurements     | id               | primary key
-.                | station          | station id 
-.                | parameter        | parameter / sensor
-.                | value            | measured value
-.                | aggregation      | aggregation period in seconds
-.                | timestamp        | date - time of observation
+Table         | fields      |format  | description
+--------------|-------------|--------|-------------
+measurements  | id          | INT    | primary key
+.             | station     | TEXT   | station id 
+.             | parameter   | TEXT   | parameter / sensor
+.             | value       | REAL   | measured value
+.             | aggregation | REAL   | aggregation period in seconds
+.             | timestamp   | INT    | date - time of observation
 
 
 The station id is the name of the station, it is stored as a string.
@@ -143,12 +143,12 @@ seconds.
 The location table contains basic information about the station, like
 name and position.
 
-Table            | fields           | description
------------------|------------------|-------------
-location         | id               | primary key
-.                | station          | station id
-.                | lat, lon         | latitude / longitude
-.                | timestamp        | date - time of station info
+Table      | fields    |format   | description
+-----------|-----------|---------|-------------
+location   | id        | INT     | primary key
+.          | station   | TEXT    | station id
+.          | lat, lon  | REAL    | latitude / longitude
+.          | timestamp | INT     | date - time of station info
 
 
 The station id is refered by the measurements table and contains the
@@ -169,11 +169,11 @@ In the caching table the time ranges for which information about a
 station is present in the database, is recorded.
 
  
-Table            | fields           | description
------------------|------------------|-------------------------
-caching          | id               | primary key
-.                | station          | station id
-.                | start, end       | time range / timestamps
+Table    | fields      | format  | description
+---------|-------------|---------|-------------------------
+caching  | id          | INT     | primary key
+.        | station     | TEXT    | station id
+.        | start, end  | INT     | time range / timestamps
 
 
 Again, station is refered by the other tables. Start and end are the
