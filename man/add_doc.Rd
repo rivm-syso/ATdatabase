@@ -4,7 +4,7 @@
 \alias{add_doc}
 \title{Add meta document to database}
 \usage{
-add_doc(type, ref, doc, conn)
+add_doc(type, ref, doc, conn, overwrite = FALSE)
 }
 \arguments{
 \item{type}{character string with type, freely definable.}
@@ -13,7 +13,7 @@ add_doc(type, ref, doc, conn)
 
 \item{doc}{R object to store}
 
-\item{database}{conection object
+\item{conn}{database connection object
 
 It is up to the user to organise the meta-data in the database.
 Meta-data objects are ordinary R objects like character strings,
