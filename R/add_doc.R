@@ -8,7 +8,7 @@
 #' @param type character string with type, freely definable.
 #' @param ref character string with reference, freely definable.
 #' @param doc R object to store
-#' @param database conection object
+#' @param conn database connection object
 #'
 #' It is up to the user to organise the meta-data in the database.
 #' Meta-data objects are ordinary R objects like character strings,
@@ -20,7 +20,7 @@
 #' @export
 #'
 
-add_doc <- function(type, ref, doc, conn) {
+add_doc <- function(type, ref, doc, conn, overwrite = FALSE) {
 
     if(!is.character(type)) {
         stop("ERROR add_doc: type is not character")
@@ -28,6 +28,19 @@ add_doc <- function(type, ref, doc, conn) {
 
     if(!is.character(ref)) {
         stop("ERROR add_doc: type is not character")
+    }
+
+    if(!is.logical(overwrite)) {
+        stop("ERROR add_doc: overwrite is not logical")
+    }
+
+
+    if(doc_exists(type, ref, conn)) {
+        if(overwrite) {
+            remove_doc(type, ref, conn)
+        } else {
+            stop("Error add_doc: doc exists and overwrite is FALSE")
+        }
     }
 
     # !! as constraint, combination of type and ref must be unique
