@@ -47,6 +47,7 @@ download_data <- function(station, Tstart, Tend, fun, conn) {
             insert_downloaded_ranges(station, ranges, conn)
         } else {
             v2 <- NULL
+            insert_downloaded_ranges(station, ranges, conn)
         }
 
     } else {

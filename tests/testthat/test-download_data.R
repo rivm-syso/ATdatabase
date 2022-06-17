@@ -64,3 +64,26 @@ test_that("download_data output T2", {
               expect_true(is.null(res))
               drop_database_tables(dbconn)
 })
+
+
+test_that("download_data output NULL", {
+
+              download_null_fun <- function(x, station, conn) {
+                  return(NULL)
+              }
+
+
+              create_database_tables(dbconn)
+
+              res <- download_data(station = "test-1",
+                                         Tstart = req_range1$Tstart,
+                                         Tend = req_range1$Tend,
+                                         fun = download_null_fun,
+                                         conn = dbconn)
+
+              db <- get_db_tables(dbconn)
+              expect_true(nrow(db$cache) == 1)
+
+              drop_database_tables(dbconn)
+
+})
