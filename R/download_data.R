@@ -25,7 +25,7 @@
 #' must be available
 #'
 #' TODO: complete this, but first explain working in vignette, add
-#' summery here
+#' summary here
 #'
 #' @export
 #'
@@ -40,7 +40,7 @@ download_data <- function(station, Tstart, Tend, fun, conn) {
 
     if(nrow(ranges) > 0) {
 
-        v1 <- apply(ranges, 1, eval(fun), station = station, con = conn)
+        v1 <- apply(ranges, 1, eval(fun), station = station, conn = conn)
         if(!is.null(v1)) {
             v2 <- do.call("rbind", v1)
             insert_measurements(data = v2, conn)
