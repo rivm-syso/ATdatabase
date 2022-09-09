@@ -22,7 +22,8 @@ Depends: R (>= 4.1),
     IntervalSurgeon,
     glue,
     magrittr,
-    jsonlite
+    jsonlite,
+    lubridate
 Suggests: 
     covr,
     knitr,
