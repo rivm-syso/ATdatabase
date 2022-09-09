@@ -16,3 +16,21 @@ test_that("insert_measurements", {
 
 
 })
+
+test_that("location_exists", {
+
+
+             create_database_tables(dbconn)
+
+             expect_false(location_exists(station = "test1", conn = dbconn))
+
+             insert_location_info(station = "test1",
+                                 lat =51.1, lon = 4.1,
+                                 conn = dbconn)
+
+
+             expect_true(location_exists(station = "test1", conn = dbconn))
+
+             drop_database_tables(dbconn)
+})
+
