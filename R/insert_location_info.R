@@ -29,10 +29,13 @@ insert_location_info <- function(station, lat, lon, conn,
         stop("ERROR: insert_location_info: lat or lon is not numeric")
     }
 
-    qry <- glue::glue_sql('insert into location (station, lat, lon, timestamp) values({station}, {lat}, {lon}, {datetime});',
-                          .con = conn)
+    if(!location_exists(station, lat, lon, conn)) {
 
-    dbExecute(conn, qry)
+        qry <- glue::glue_sql('insert into location (station, lat, lon, timestamp) values({station}, {lat}, {lon}, {datetime});',
+                              .con = conn)
+
+        dbExecute(conn, qry)
+    }
 
 
 }
