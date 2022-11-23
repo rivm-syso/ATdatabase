@@ -39,3 +39,33 @@ test_that("insert_location_info, output", {
              drop_database_tables(dbconn)
 })
 
+
+test_that("insert_location_info, duplicates", {
+
+             create_database_tables(dbconn)
+
+             insert_location_info(station = "test1",
+                                 lat =51.1, lon = 4.1,
+                                 conn = dbconn)
+
+
+             insert_location_info(station = "test1",
+                                 lat =51.1, lon = 4.1,
+                                 conn = dbconn)
+
+             db <- get_db_tables(dbconn)
+             t1  <- db$location
+             expect_true(nrow(t1) == 1)
+
+             # other location
+             insert_location_info(station = "test1",
+                                 lat =51.2, lon = 4.1,
+                                 conn = dbconn)
+
+             db <- get_db_tables(dbconn)
+             t1  <- db$location
+             expect_true(nrow(t1) == 2)
+
+             drop_database_tables(dbconn)
+})
+

@@ -7,7 +7,7 @@
 create_database_tables(conn)
 }
 \arguments{
-\item{pool}{pool object with database connection}
+\item{conn}{connection object with database connection}
 }
 \description{
 This function creates the database tables for this package. It uses

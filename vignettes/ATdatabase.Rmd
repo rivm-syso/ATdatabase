@@ -103,14 +103,14 @@ database in detail.
 
 The measurements table contains all the measurements
 
-Table            | fields           | description
------------------|------------------|-------------
-measurements     | id               | primary key
-.                | station          | station id 
-.                | parameter        | parameter / sensor
-.                | value            | measured value
-.                | aggregation      | aggregation period in seconds
-.                | timestamp        | date - time of observation
+Table         | fields      |format  | description
+--------------|-------------|--------|-------------
+measurements  | id          | INT    | primary key
+.             | station     | TEXT   | station id 
+.             | parameter   | TEXT   | parameter / sensor
+.             | value       | REAL   | measured value
+.             | aggregation | REAL   | aggregation period in seconds
+.             | timestamp   | INT    | date - time of observation
 
 
 The station id is the name of the station, it is stored as a string.
@@ -143,12 +143,12 @@ seconds.
 The location table contains basic information about the station, like
 name and position.
 
-Table            | fields           | description
------------------|------------------|-------------
-location         | id               | primary key
-.                | station          | station id
-.                | lat, lon         | latitude / longitude
-.                | timestamp        | date - time of station info
+Table      | fields    |format   | description
+-----------|-----------|---------|-------------
+location   | id        | INT     | primary key
+.          | station   | TEXT    | station id
+.          | lat, lon  | REAL    | latitude / longitude
+.          | timestamp | INT     | date - time of station info
 
 
 The station id is refered by the measurements table and contains the
@@ -169,11 +169,11 @@ In the caching table the time ranges for which information about a
 station is present in the database, is recorded.
 
  
-Table            | fields           | description
------------------|------------------|-------------------------
-caching          | id               | primary key
-.                | station          | station id
-.                | start, end       | time range / timestamps
+Table    | fields      | format  | description
+---------|-------------|---------|-------------------------
+caching  | id          | INT     | primary key
+.        | station     | TEXT    | station id
+.        | start, end  | INT     | time range / timestamps
 
 
 Again, station is refered by the other tables. Start and end are the
@@ -186,12 +186,12 @@ The meta table contains unstructured data about stations, sensors, or
 whatever the user likes to store. 
 
 
-Table            | fields           | description
----------------- | ---------------- | ------------
-meta             | id               | primary key
-.                | type             | type
-.                | ref              | reference
-.                | doc              | JSON doc
+Table | fields | format | description
+------|--------|--------|-------------
+meta  | id     | INT    | primary key
+.     | type   | TEXT   | type
+.     | ref    | TEXT   | reference
+.     | doc    | TEXT   | JSON doc
 
 
 The type field determines the type of the meta data. For example
@@ -251,7 +251,7 @@ pool::dbListTables(dbconn)
 
 Before you can download and store (cache) your downloaded data you
 have to make a few preparations. In general you have to create
-functions to get the data about stations, for the station info table.
+functions to get the data about stations, for the location info table.
 Also, you have to create a download function to obtain the station
 measurements. These functions have to return the data in a specifific
 format so they can be used in conjunction with the functions from this
@@ -278,7 +278,7 @@ exdata
 ## Downloading and storing sensor info
 
 Information about station are divided over two database tables. The
-station table only contains the station identifier, the coordinates
+location table only contains the station identifier, the coordinates
 (lat, lon) and a timestamp. All other station data is stored in the
 meta table as unstructured data.
 

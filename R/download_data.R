@@ -25,7 +25,7 @@
 #' must be available
 #'
 #' TODO: complete this, but first explain working in vignette, add
-#' summery here
+#' summary here
 #'
 #' @export
 #'
@@ -40,13 +40,14 @@ download_data <- function(station, Tstart, Tend, fun, conn) {
 
     if(nrow(ranges) > 0) {
 
-        v1 <- apply(ranges, 1, eval(fun), station = station)
+        v1 <- apply(ranges, 1, eval(fun), station = station, conn = conn)
         if(!is.null(v1)) {
             v2 <- do.call("rbind", v1)
             insert_measurements(data = v2, conn)
             insert_downloaded_ranges(station, ranges, conn)
         } else {
             v2 <- NULL
+            insert_downloaded_ranges(station, ranges, conn)
         }
 
     } else {
@@ -61,6 +62,10 @@ download_data <- function(station, Tstart, Tend, fun, conn) {
 #'
 #' This is an example of a download function. We need to explain this
 #' further.
+#'
+#' @param x time range
+#' @param station station id
+#' @param conn database connection object
 #'
 #' @export
 download_data_fun <- function(x, station, conn) {
