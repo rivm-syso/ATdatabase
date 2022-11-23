@@ -57,7 +57,16 @@ create_database_tables <- function(conn) {
                         doc TEXT NOT NULL
     )
     "
-    pool::dbExecute(conn,qry)
+    pool::dbExecute(conn, qry)
+
+    qry <- "CREATE INDEX idx_measurements ON measurements (station, timestamp)"
+    pool::dbExecute(conn, qry)
+
+    qry <- "CREATE INDEX idx_location ON location (station)"
+    pool::dbExecute(conn, qry)
+
+    qry <- "CREATE INDEX idx_meta ON meta (type,ref)"
+    pool::dbExecute(conn, qry)
 
 
 }
