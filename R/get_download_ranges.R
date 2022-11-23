@@ -7,6 +7,7 @@
 #' @param station station identifier
 #' @param Tstart start of requested time range
 #' @param Tend end of requested time range
+#' @param conn database connection object
 #'
 #' @return a matrix with time ranges (in seconds) which can be used to
 #' download the misisng data

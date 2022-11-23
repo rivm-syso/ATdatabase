@@ -20,7 +20,12 @@ Meta-data objects are ordinary R objects like character strings,
 lists or data.frames. These objects can be organised using the type
 and ref fields. For example, a data.frame with specifications of a
 certain sensor at a stations, can be stored using 'sensor' as type
-and the station id as ref (reference).}
+and the station id as ref (reference).
+
+If a meta document allready exists, this function returns an error,
+unless overwrite = TRUE.}
+
+\item{overwrite}{when TRUE overwrite doc if it exists}
 }
 \description{
 Adds a meta-data document to the database. This meta-data document

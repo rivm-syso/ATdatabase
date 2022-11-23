@@ -11,10 +11,9 @@ Author: Job Spijker [aut]
 Maintainer: Job Spijker <job.spijker@rivm.nl>
 Description: Database backend for the Analyse Together (AT) tool. This backend provides a caching database with uniform API for data exploration tools like AT. With AT users can explore their own environmental sensor data. This database can download such data from different sources, stores measurements in 'classic' tables and uses a NoSQL approach for all kind of meta-data and application data.  
 License: GPL-3
-    license
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Depends: R (>= 4.1), 
     pool, 
     dplyr,

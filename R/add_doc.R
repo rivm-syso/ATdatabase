@@ -8,6 +8,7 @@
 #' @param type character string with type, freely definable.
 #' @param ref character string with reference, freely definable.
 #' @param doc R object to store
+#' @param overwrite when TRUE overwrite doc if it exists 
 #' @param conn database connection object
 #'
 #' It is up to the user to organise the meta-data in the database.
@@ -16,6 +17,9 @@
 #' and ref fields. For example, a data.frame with specifications of a
 #' certain sensor at a stations, can be stored using 'sensor' as type
 #' and the station id as ref (reference).
+#'
+#' If a meta document allready exists, this function returns an error,
+#' unless overwrite = TRUE. 
 #'
 #' @export
 #'

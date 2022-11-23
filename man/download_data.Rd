@@ -31,7 +31,7 @@ Depending on the source (file, database or API) a specific function
 must be available
 
 TODO: complete this, but first explain working in vignette, add
-summery here
+summary here
 }
 \description{
 This function downloads measurements for a specific time range and

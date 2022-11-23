@@ -63,6 +63,10 @@ download_data <- function(station, Tstart, Tend, fun, conn) {
 #' This is an example of a download function. We need to explain this
 #' further.
 #'
+#' @param x time range
+#' @param station station id
+#' @param conn database connection object
+#'
 #' @export
 download_data_fun <- function(x, station, conn) {
     # conn is ingored

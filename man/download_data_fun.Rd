@@ -6,6 +6,13 @@
 \usage{
 download_data_fun(x, station, conn)
 }
+\arguments{
+\item{x}{time range}
+
+\item{station}{station id}
+
+\item{conn}{database connection object}
+}
 \description{
 This is an example of a download function. We need to explain this
 further.

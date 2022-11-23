@@ -3,7 +3,7 @@
 #' This function creates the database tables for this package. It uses
 #' a pool object with the database connection
 #'
-#' @param pool pool object with database connection
+#' @param conn connection object with database connection
 #'
 #' @export
 #'

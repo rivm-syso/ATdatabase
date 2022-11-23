@@ -12,6 +12,8 @@ get_download_ranges(station, Tstart, Tend, conn)
 \item{Tstart}{start of requested time range}
 
 \item{Tend}{end of requested time range}
+
+\item{conn}{database connection object}
 }
 \value{
 a matrix with time ranges (in seconds) which can be used to
