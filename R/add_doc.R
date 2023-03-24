@@ -31,7 +31,7 @@ add_doc <- function(type, ref, doc, conn, overwrite = FALSE) {
     }
 
     if(!is.character(ref)) {
-        stop("ERROR add_doc: type is not character")
+        stop("ERROR add_doc: ref is not character")
     }
 
     if(!is.logical(overwrite)) {
