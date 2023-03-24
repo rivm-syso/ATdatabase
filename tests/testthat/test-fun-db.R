@@ -32,8 +32,12 @@ test_that("location_exists", {
              expect_true(location_exists(station = "test1", lat = 51.1, lon = 4.1,
                                           conn = dbconn))
 
-             # different coordinates
-             expect_false(location_exists(station = "test2", lat = 51.2, lon = 4.1,
+             # different coordinates, same name
+             expect_false(location_exists(station = "test1", lat = 51.2, lon = 4.1,
+                                          conn = dbconn))
+
+             # same coordinates, different name
+             expect_false(location_exists(station = "test2", lat = 51.1, lon = 4.1,
                                           conn = dbconn))
 
 

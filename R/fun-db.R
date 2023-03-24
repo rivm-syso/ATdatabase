@@ -18,11 +18,11 @@ insert_measurements <- function(data, conn) {
 
 location_exists <- function(station, lat, lon,  conn) {
 
-    qry <- glue::glue_sql("select {station} from location where lat = {lat} and lon = {lon};", .con = conn)
+    qry <- glue::glue_sql("select {station} from location where station = {station} and lat = {lat} and lon = {lon};", .con = conn)
     res <- dbGetQuery(conn, qry)
 
    if(nrow(res)>=1) {
-       result <- TRUE
+       result <- TRUe
    } else {
        result <- FALSE
    }
