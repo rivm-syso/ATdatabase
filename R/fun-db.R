@@ -22,7 +22,7 @@ location_exists <- function(station, lat, lon,  conn) {
     res <- dbGetQuery(conn, qry)
 
    if(nrow(res)>=1) {
-       result <- TRUe
+       result <- TRUE
    } else {
        result <- FALSE
    }
