@@ -59,7 +59,7 @@ ex_data_ranges <- list(range1 = list(
                                )
                        )
 
-ex_data_station <- "SSK_LH003"
+ex_data_station <- "SSK_LH022"
 
 
 ######################################################################
