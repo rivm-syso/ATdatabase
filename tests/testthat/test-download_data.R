@@ -17,18 +17,17 @@ test_that("download_data", {
 
 
               create_database_tables(dbconn)
+
               v1 <- download_data(station = ex_data_station,
                                   Tstart = ex_data_ranges$range1$Tstart,
                                   Tend = ex_data_ranges$range1$Tend,
                                   fun = "download_data_fun", 
                                   conn = dbconn)
 
-
-
               db <- get_db_tables(dbconn)
-              expect_true(nrow(v1) == nrow_range1)
-              expect_true(nrow(db$cache) == 1)
-              expect_true(nrow(db$measurements) == nrow_range1)
+              expect_equal(nrow(v1), nrow_range1)
+              expect_equal(nrow(db$cache), 1)
+              expect_equal(nrow(db$measurements), nrow_range1)
 
 
               v2 <- download_data(station = ex_data_station,
@@ -66,6 +65,33 @@ test_that("download_data output T2", {
 })
 
 
+test_that("download_data no data NULL", {
+
+              download_nodata <- function(x, station, conn) {
+
+                  v1 <- data.frame(station = NULL, parameter = NULL, value = NULL,
+                  aggregation = NULL, timestamp = NULL)
+                  return(v1)
+                  
+              }
+
+
+              create_database_tables(dbconn)
+
+              res <- download_data(station = "test-1",
+                                         Tstart = req_range1$Tstart,
+                                         Tend = req_range1$Tend,
+                                         fun = download_nodata,
+                                         conn = dbconn)
+
+              db <- get_db_tables(dbconn)
+              expect_true(nrow(db$cache) == 1)
+
+              drop_database_tables(dbconn)
+
+})
+
+
 test_that("download_data output NULL", {
 
               download_null_fun <- function(x, station, conn) {
@@ -82,8 +108,32 @@ test_that("download_data output NULL", {
                                          conn = dbconn)
 
               db <- get_db_tables(dbconn)
-              expect_true(nrow(db$cache) == 1)
+              expect_true(nrow(db$cache) == 0)
 
               drop_database_tables(dbconn)
 
 })
+
+test_that("download_data_error", {
+
+              download_err_fun <- function(x, station, conn) {
+                  stop("An error occured")
+              }
+
+
+              create_database_tables(dbconn)
+
+              expect_warning(res <- download_data(station = ex_data_station,
+                                         Tstart = req_range1$Tstart,
+                                         Tend = req_range1$Tend,
+                                         fun = download_err_fun,
+                                         conn = dbconn))
+
+              db <- get_db_tables(dbconn)
+              expect_true(nrow(db$cache) == 0)
+              expect_true(is.null(res))
+
+              drop_database_tables(dbconn)
+
+})
+
