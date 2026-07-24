@@ -45,7 +45,7 @@
 #' If an error occurs during the download process, the download_data
 #' function returns NULL and a warning is issued. The time range is
 #' not added to the database in this case.
-#'
+
 #' TODO: complete this, but first explain working in vignette, add
 #' summary here
 #'

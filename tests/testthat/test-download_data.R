@@ -65,14 +65,11 @@ test_that("download_data output T2", {
 })
 
 
-test_that("download_data no data NULL", {
+test_that("download_data empty data.frame", {
 
               download_nodata <- function(x, station, conn) {
-
-                  v1 <- data.frame(station = NULL, parameter = NULL, value = NULL,
-                  aggregation = NULL, timestamp = NULL)
+                  v1 <- data.frame()
                   return(v1)
-                  
               }
 
 
