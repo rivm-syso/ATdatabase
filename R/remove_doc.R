@@ -31,7 +31,7 @@ remove_doc <- function(type, ref, conn) {
                     type={type} and ref={ref};", .con = conn)
 
                     
-   res <- dbExecute(conn, qry)
+   res <- pool::dbExecute(conn, qry)
 
    return(NULL)
 }
