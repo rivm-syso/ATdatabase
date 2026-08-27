@@ -19,7 +19,7 @@
 
 list_doc <- function(type, conn) {
 
-    if(!is.character(type)) {
+    if (!is.character(type)) {
         stop("ERROR list_doc: type is not character")
     }
 
@@ -27,7 +27,7 @@ list_doc <- function(type, conn) {
                           .con = conn)
 
     res <- pool::dbGetQuery(conn, qry)
-    if(length(res$ref) == 0) {
+    if (length(res$ref) == 0) {
         ref <- NA
     } else {
         ref <- res$ref
