@@ -34,7 +34,7 @@ insert_location_info <- function(station, lat, lon, conn,
         qry <- glue::glue_sql('insert into location (station, lat, lon, timestamp) values({station}, {lat}, {lon}, {datetime});',
                               .con = conn)
 
-        dbExecute(conn, qry)
+        pool::dbExecute(conn, qry)
     }
 
 
