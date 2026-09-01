@@ -656,6 +656,70 @@ function. A few examples of this function are shown above.
 Stay away from the cache table. Let the package handle this table
 
 
+# Remove data
+
+Sometimes data that was downloaded earlier needs to be removed from the
+database, for example when a data source is found to be unreliable or
+when you want to force a fresh download of a certain period. The
+`remove_time_ranges_before` function lets you remove data based on the
+moment it was downloaded.
+
+Every time a time range is stored in the caching table, the download
+time is recorded in the `time_dl` field. The
+`remove_time_ranges_before` function takes a single date as argument
+and removes all cached time ranges (and their measurements) that were
+downloaded *before or equal to* that date.
+
+For each cached time range that was downloaded before or equal to the
+given date, the function:
+
+* removes the measurements of the station between the start and end
+  time of that range, including the measurements exactly at the start
+  and end time;
+* checks whether any measurements for that station remain. If none
+  remain, the station is also removed from the location table;
+* removes the processed record from the caching table.
+
+The function returns a named list, one element per station, containing
+the start and end time of the removed range and a boolean indicating
+whether the station was removed from the location table.
+
+## Example
+
+Suppose we want to remove everything that was downloaded before a
+certain moment. We pass that moment as a datetime object:
+
+```{r eval = FALSE}
+cutoff <- lubridate::now()
+removed <- remove_time_ranges_before(cutoff, conn = dbconn)
+removed
+```
+
+The result is a named list, for example:
+
+```
+$SSK_LH003
+$SSK_LH003$start
+[1] "2022-02-01 00:00:00 UTC"
+
+$SSK_LH003$end
+[1] "2022-02-05 10:00:00 UTC"
+
+$SSK_LH003$removed
+[1] TRUE
+```
+
+Here the measurements for station `SSK_LH003` between the start and end
+time were removed, and because no other measurements for that station
+were left, it was also removed from the location table
+(`removed = TRUE`). If measurements for the station remain outside the
+removed range, `removed` is `FALSE` and the station stays in the
+location table.
+
+Be careful: this operation is destructive and cannot be undone. Make
+sure you really want to remove the data before calling this function.
+
+
 ```{r echo = FALSE, messages = FALSE}
 # closing stuff
 pool::poolClose(dbconn)
