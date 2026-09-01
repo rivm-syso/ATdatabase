@@ -47,7 +47,7 @@ test_that("get_available_time_ranges output", {
               expect_true(res[1, 1] == ex_ranges[2, 1])
               expect_true(res[2, 2] == ex_ranges[3, 2])
 
-              station = "nonexisting"
+              station <- "nonexisting"
               res <- get_available_time_ranges(station, dbconn)
               expect_true(nrow(res) == 0) 
               res <- get_available_time_ranges("nonexisting", dbconn)
