@@ -668,10 +668,10 @@ Every time a time range is stored in the caching table, the download
 time is recorded in the `time_dl` field. The
 `remove_time_ranges_before` function takes a single date as argument
 and removes all cached time ranges (and their measurements) that were
-downloaded *before* that date.
+downloaded *before or equal to* that date.
 
-For each cached time range that was downloaded before the given date,
-the function:
+For each cached time range that was downloaded before or equal to the
+given date, the function:
 
 * removes the measurements of the station between the start and end
   time of that range, including the measurements exactly at the start

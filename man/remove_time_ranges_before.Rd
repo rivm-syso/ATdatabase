@@ -8,7 +8,7 @@ remove_time_ranges_before(date, conn)
 }
 \arguments{
 \item{date}{a datetime (POSIXct) object. All cached time ranges with
-a download time before this date are removed.}
+a download time before or equal to this date are removed.}
 
 \item{conn}{database connection object}
 }
@@ -23,14 +23,15 @@ the location table.
 Remove measurements from the database based on the moment they were
 downloaded. Every time a time range is stored in the caching table,
 the download time is recorded in the \code{time_dl} field. This function
-removes all cached time ranges that were downloaded before the given
-date, together with the measurements that belong to those ranges.
+removes all cached time ranges that were downloaded on or before the
+given date, together with the measurements that belong to those
+ranges.
 }
 \details{
-For each cached time range that was downloaded before \code{date}, the
-function removes the measurements of the station between the start
-and end time of that range, including the measurements exactly at
-the start and end time. If, after removing these measurements, no
+For each cached time range that was downloaded on or before \code{date},
+the function removes the measurements of the station between the
+start and end time of that range, including the measurements exactly
+at the start and end time. If, after removing these measurements, no
 other measurements for that station remain, the station is also
 removed from the location table. The processed record is removed
 from the caching table.

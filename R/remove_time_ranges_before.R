@@ -3,19 +3,20 @@
 #' Remove measurements from the database based on the moment they were
 #' downloaded. Every time a time range is stored in the caching table,
 #' the download time is recorded in the `time_dl` field. This function
-#' removes all cached time ranges that were downloaded before the given
-#' date, together with the measurements that belong to those ranges.
+#' removes all cached time ranges that were downloaded on or before the
+#' given date, together with the measurements that belong to those
+#' ranges.
 #'
-#' For each cached time range that was downloaded before `date`, the
-#' function removes the measurements of the station between the start
-#' and end time of that range, including the measurements exactly at
-#' the start and end time. If, after removing these measurements, no
+#' For each cached time range that was downloaded on or before `date`,
+#' the function removes the measurements of the station between the
+#' start and end time of that range, including the measurements exactly
+#' at the start and end time. If, after removing these measurements, no
 #' other measurements for that station remain, the station is also
 #' removed from the location table. The processed record is removed
 #' from the caching table.
 #'
 #' @param date a datetime (POSIXct) object. All cached time ranges with
-#'   a download time before this date are removed.
+#'   a download time before or equal to this date are removed.
 #' @param conn database connection object
 #'
 #' @return a named list with one element per removed time range. Each
@@ -34,7 +35,7 @@ remove_time_ranges_before <- function(date, conn) {
 
     cutoff <- as.numeric(date)
 
-    qry <- glue::glue_sql("SELECT id FROM cache WHERE time_dl < {cutoff};",
+    qry <- glue::glue_sql("SELECT id FROM cache WHERE time_dl <= {cutoff};",
                           .con = conn)
     ids <- pool::dbGetQuery(conn, qry)$id
 

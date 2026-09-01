@@ -1,30 +1,8 @@
 ######################################################################
-# helpers to seed the database for these tests
+# tests for remove_time_ranges_before
+#
+# the seed_* helper functions used below live in helper.R
 ######################################################################
-
-# insert a cache record with an explicit download time
-seed_cache <- function(station, start, end, time_dl, conn) {
-    qry <- glue::glue_sql(
-        "INSERT INTO cache (station, start, end, time_dl) VALUES ({station}, {start}, {end}, {time_dl});",
-        .con = conn)
-    pool::dbExecute(conn, qry)
-}
-
-# insert a single measurement
-seed_measurement <- function(station, timestamp, conn) {
-    qry <- glue::glue_sql(
-        "INSERT INTO measurements (station, parameter, value, aggregation, timestamp) VALUES ({station}, 'pm25', 1.0, 3600, {timestamp});",
-        .con = conn)
-    pool::dbExecute(conn, qry)
-}
-
-# insert a location record
-seed_location <- function(station, conn) {
-    qry <- glue::glue_sql(
-        "INSERT INTO location (station, lat, lon, timestamp) VALUES ({station}, 52.0, 5.0, 0);",
-        .con = conn)
-    pool::dbExecute(conn, qry)
-}
 
 
 test_that("remove_time_ranges_before checks input", {
@@ -120,6 +98,31 @@ test_that("remove_time_ranges_before respects the cutoff date", {
     expect_equal(nrow(tbls$measurements), 1)
     expect_true("test-1" %in% tbls$location$station)
     expect_equal(nrow(tbls$cache), 1)
+
+    drop_database_tables(dbconn)
+})
+
+
+test_that("remove_time_ranges_before includes ranges downloaded exactly at the cutoff", {
+    create_database_tables(dbconn)
+
+    start <- as.numeric(lubridate::as_datetime("2022-02-01 00:00:00"))
+    end <- as.numeric(lubridate::as_datetime("2022-02-02 00:00:00"))
+    cutoff <- lubridate::as_datetime("2022-04-01")
+    dl_equal <- as.numeric(cutoff)
+
+    seed_location("test-1", dbconn)
+    seed_cache("test-1", start, end, dl_equal, dbconn)
+    seed_measurement("test-1", start + 3600, dbconn)
+
+    # download time is exactly the cutoff, so the range must be removed
+    res <- remove_time_ranges_before(cutoff, conn = dbconn)
+
+    tbls <- get_db_tables(dbconn)
+    expect_equal(length(res), 1)
+    expect_true(res[["test-1"]]$removed)
+    expect_equal(nrow(tbls$measurements), 0)
+    expect_equal(nrow(tbls$cache), 0)
 
     drop_database_tables(dbconn)
 })
