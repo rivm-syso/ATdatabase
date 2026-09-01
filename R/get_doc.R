@@ -43,7 +43,7 @@ get_doc <- function(type, ref, conn) {
                     type={type} and ref={ref};", .con = conn)
 
                     
-   res <- dbGetQuery(conn, qry)
+   res <- pool::dbGetQuery(conn, qry)
    if(nrow(res) == 0) {
        d <- NA
    } else {

@@ -56,7 +56,7 @@ add_doc <- function(type, ref, doc, conn, overwrite = FALSE) {
 
     qry <- glue::glue_sql("INSERT INTO meta (type, ref, doc) values ({type},
                     {ref}, {jsondoc})", .con = conn)
-    dbExecute(conn, qry)
+    pool::dbExecute(conn, qry)
 
 }
 

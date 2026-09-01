@@ -16,6 +16,8 @@ test_that("insert_time_ranges output", {
               expect_equal(res$start, ex_ranges[1,1])
               expect_equal(res$end, ex_ranges[1,2])
               expect_equal(res$station, "test")
+              expect_false(is.na(res$time_dl))
+              expect_true(res$time_dl > 0)
 
               drop_database_tables(dbconn)
 
@@ -45,7 +47,7 @@ test_that("get_available_time_ranges output", {
               expect_true(res[1, 1] == ex_ranges[2, 1])
               expect_true(res[2, 2] == ex_ranges[3, 2])
 
-              station = "nonexisting"
+              station <- "nonexisting"
               res <- get_available_time_ranges(station, dbconn)
               expect_true(nrow(res) == 0) 
               res <- get_available_time_ranges("nonexisting", dbconn)

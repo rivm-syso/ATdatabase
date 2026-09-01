@@ -6,21 +6,19 @@
 
 insert_time_range <- function(x, station, conn)  {
 
-    if(length(x) >2) {
+    if (length(x) > 2) {
         stop("ERROR insert_time_range: length range >2")
     }
 
     start <- x[1]
     end <- x[2]
 
-    qry <- glue::glue_sql('INSERT INTO cache (station, start, end) VALUES ({station}, {start}, {end});',
-                .con = conn)
-
+    time_dl <- as.numeric(as.POSIXct(Sys.time(), tz = "UTC"))
+    qry <- glue::glue_sql("INSERT INTO cache (station, start, end, time_dl) VALUES ({station}, {start}, {end}, {time_dl});",
+                          .con = conn)
     pool::dbExecute(conn, qry)
+    return(NULL)
 }
-
-
-
 
 get_available_time_ranges <- function(station, conn){
 
@@ -53,5 +51,3 @@ insert_downloaded_ranges <- function(station, ranges, conn) {
           conn = conn)
     }
 }
-
-
