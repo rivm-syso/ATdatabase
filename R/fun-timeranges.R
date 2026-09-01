@@ -13,7 +13,10 @@ insert_time_range <- function(x, station, conn)  {
     start <- x[1]
     end <- x[2]
 
-    qry <- glue::glue_sql('INSERT INTO cache (station, start, end) VALUES ({station}, {start}, {end});',
+    # timestamp of the download, recorded as a UTC unix timestamp
+    time_dl <- as.numeric(as.POSIXct(Sys.time(), tz = "UTC"))
+
+    qry <- glue::glue_sql('INSERT INTO cache (station, start, end, time_dl) VALUES ({station}, {start}, {end}, {time_dl});',
                 .con = conn)
 
     pool::dbExecute(conn, qry)

@@ -44,7 +44,8 @@ create_database_tables <- function(conn) {
                         id  INTEGER PRIMARY KEY AUTOINCREMENT,
                         station TEXT NOT NULL,
                         start INTEGER,
-                        end INTEGER
+                        end INTEGER,
+                        time_dl INTEGER NOT NULL
     )
     "
     pool::dbExecute(conn,qry)

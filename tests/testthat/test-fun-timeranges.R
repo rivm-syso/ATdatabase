@@ -16,6 +16,8 @@ test_that("insert_time_ranges output", {
               expect_equal(res$start, ex_ranges[1,1])
               expect_equal(res$end, ex_ranges[1,2])
               expect_equal(res$station, "test")
+              expect_false(is.na(res$time_dl))
+              expect_true(res$time_dl > 0)
 
               drop_database_tables(dbconn)
 
